@@ -12,16 +12,7 @@ class Deal{
     this.salePrice = double.parse(salePrice).toStringAsFixed(2);
     this.normalPrice = double.parse(normalPrice).toStringAsFixed(2);
   }
-
 }
-class Customer {
-  String name = "";
-  int age = 1;
-  String location = "";
-  // constructor
-  Customer(this.name, this.age, this.location);
-}
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -149,13 +140,13 @@ class _HomePageState extends State<HomePage> {
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: "\$${deal.normalPrice} ",
+                                      text: "\$${deal.normalPrice}",
                                       style: const TextStyle(
                                         color: Colors.red,
                                         decoration: TextDecoration.lineThrough),
                                     ),
                                     TextSpan(
-                                        text: "\$${deal.salePrice}",
+                                        text: "   \$${deal.salePrice}",
                                         style: const TextStyle(
                                           color: Colors.green
                                         )
