@@ -88,32 +88,21 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white10,
       appBar: AppBar(
-        title: const Text("SteamDeals"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text("SteamDeals"),
+            SizedBox(width: 10)
+          ]
+        ),
       ),
       body: Container(
         margin: const EdgeInsets.only(top: 15, bottom: 10),
         child: Column(
           children: [
-            GFAlert(
-              alignment: Alignment.center,
-              backgroundColor: Colors.white,
-              content: 'SteamDeals is a bookmarking tool for game deals',
-              type: GFAlertType.rounded,
-              bottombar: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  GFButton(
-                    onPressed: (){Navigator.pushNamed(context, route.explorePage);},
-                    icon: const Icon(Icons.double_arrow, color: Colors.white),
-                    position: GFPosition.end,
-                    child: const Text("Explore"),
-                  )
-                ]
-              ),
-            ),
             const Text(
               "Featured",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.white60) ,
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.greenAccent) ,
             ),
             FutureBuilder(
               future: getFeaturedDeals(),
@@ -126,72 +115,73 @@ class _HomePageState extends State<HomePage> {
                   deals.add(d);
                 }
                 return GFCarousel(
-                          items: deals.map(
-                            (deal) {
-                          return Container(
-                            margin: const EdgeInsets.all(8.0),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                              child: GFCard(
-                                boxFit: BoxFit.cover,
-                                image: Image.network(
-                                  deal.image,
-                                  height: 25
-                                ),
-                                showImage: true,
-                                title: GFListTile(
-                                  title: Text(deal.title),
-                                ),
-                                content: GFButtonBar(
-                                  children: [
-                                    GFButton(
-                                      onPressed: (){},
-                                      shape: GFButtonShape.pills,
-                                      child: Text("-${deal.savings}%"),
+                  height: 270,
+                  items: deals.map(
+                    (deal) {
+                  return Container(
+                    margin: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                      child: GFCard(
+                        boxFit: BoxFit.cover,
+                        image: Image.network(
+                          deal.image,
+                          height: 50
+                        ),
+                        showImage: true,
+                        title: GFListTile(
+                          title: Center(child: Text(deal.title)),
+                        ),
+                        content: GFButtonBar(
+                          children: [
+                            GFButton(
+                              onPressed: (){},
+                              shape: GFButtonShape.pills,
+                              child: Text("-${deal.savings}%"),
+                            ),
+                            GFButton(
+                              onPressed: (){},
+                              shape: GFButtonShape.pills,
+                              type: GFButtonType.transparent,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: '',
+                                  style: DefaultTextStyle.of(context).style,
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "\$${deal.normalPrice} ",
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        decoration: TextDecoration.lineThrough),
                                     ),
-                                    GFButton(
-                                      onPressed: (){},
-                                      shape: GFButtonShape.pills,
-                                      type: GFButtonType.transparent,
-                                      child: RichText(
-                                        text: TextSpan(
-                                          text: '',
-                                          style: DefaultTextStyle.of(context).style,
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                              text: "\$${deal.normalPrice} ",
-                                              style: const TextStyle(
-                                                color: Colors.red,
-                                                decoration: TextDecoration.lineThrough),
-                                            ),
-                                            TextSpan(
-                                                text: "\$${deal.salePrice}",
-                                                style: const TextStyle(
-                                                  color: Colors.green
-                                                )
-                                            )
-                                          ],
-                                        ),
-                                      )
+                                    TextSpan(
+                                        text: "\$${deal.salePrice}",
+                                        style: const TextStyle(
+                                          color: Colors.green
+                                        )
                                     )
                                   ],
                                 ),
-                              ),
-                            ),
-                          );
-                        },
-                      ).toList(),
-                      onPageChanged: (index) {
-                        setState(() {
-                          index;
-                        });
-                      },
-                );
-              }
+                              )
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ).toList(),
+              onPageChanged: (index) {
+                setState(() {
+                  index;
+                });
+              },
+            );
+          }
           ),
           const Text(
-              "Best score",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.white60) ,
+              "Most rated",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600, color: Colors.greenAccent) ,
           ),
             FutureBuilder(
                 future: getBestScoreDeals(),
@@ -204,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                     deals.add(d);
                   }
                   return GFCarousel(
+                    height: 270,
                     items: deals.map(
                           (deal) {
                         return Container(
@@ -214,11 +205,11 @@ class _HomePageState extends State<HomePage> {
                               boxFit: BoxFit.cover,
                               image: Image.network(
                                   deal.image,
-                                  height: 25
+                                  height: 50
                               ),
                               showImage: true,
                               title: GFListTile(
-                                title: Text(deal.title),
+                                title: Center(child: Text(deal.title)),
                               ),
                               content: GFButtonBar(
                                 children: [
