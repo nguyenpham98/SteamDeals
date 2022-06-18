@@ -1,16 +1,14 @@
-# myapp
+# SteamDeals
+Built an Android mobile app that allows single sign-on with Google accounts, bookmark favorite game deals from Steam store.
 
-A new Flutter project.
+Features:
+- Single sign-on with Google accounts: I followed Firebase documentation on setting up with Flutter using this link: 
+https://firebase.google.com/docs/auth/flutter/federated-auth
+- Bookmark deals: set up collection of users on Firebase so every user has their own wishlist array where the game deals are placed when bookmarked
+- Dynamic search bar: deals are fetched dynamically from CheapShark API using title entered by users on search bar so results are different on changes.
 
-## Getting Started
+Technology: 
+- Flutter, Firebase, CheapShark API, Dart
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Screenshots: 
+![Profile](/lib/screenshots/Screenshot (256).png)
