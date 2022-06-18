@@ -10,6 +10,12 @@ https://firebase.google.com/docs/auth/flutter/federated-auth
 Technology: 
 - Flutter, Firebase, CheapShark API, Dart
 
+Useful links:
+- https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
+- https://flutterforyou.com/how-to-fetch-data-from-api-and-show-in-flutter-listview/
+- https://www.flutterbeads.com/pass-data-to-stateful-widget-in-flutter/
+- https://stackoverflow.com/questions/64934102/firestore-add-or-remove-elements-to-existing-array-with-flutter
+
 Screenshots: 
 - Profile: 
 
