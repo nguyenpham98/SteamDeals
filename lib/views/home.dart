@@ -6,12 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:getwidget/getwidget.dart';
 
 class Deal{
-  String dealID = "", title = "", image = "", savings = "", score = "", salePrice = "", normalPrice = "";
-  Deal(this.dealID, this.title, this.image, String salePrice, String normalPrice, String score, String savings){
-    this.savings = double.parse(savings).toStringAsFixed(2);
-    this.salePrice = double.parse(salePrice).toStringAsFixed(2);
-    this.normalPrice = double.parse(normalPrice).toStringAsFixed(2);
-  }
+  String dealID, title, image;
+  double salePrice, normalPrice, score, savings;
+  Deal({
+    required this.dealID,
+    required this.title,
+    required this.image,
+    required this.salePrice,
+    required this.normalPrice,
+    required this.score,
+    required this.savings,
+  });
 }
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -32,16 +37,17 @@ class _HomePageState extends State<HomePage> {
     };
     var response = await http.get(Uri.https(baseUrl, charactersPath, queryParameters));
     var jsonData = jsonDecode(response.body);
+
     List<Deal> deals = [];
     for (var data in jsonData){
       Deal deal = Deal(
-          data["dealID"],
-          data["title"],
-          data["thumb"],
-          data["salePrice"],
-          data["normalPrice"],
-          data["metacriticScore"],
-          data["savings"],
+        dealID: data["dealID"],
+        title: data["title"],
+        image: data["thumb"],
+        salePrice: double.parse(data["salePrice"]),
+        normalPrice: double.parse(data["normalPrice"]),
+        score: double.parse(data["metacriticScore"]),
+        savings: double.parse(data["savings"]),
       );
       deals.add(deal);
     }
@@ -62,13 +68,13 @@ class _HomePageState extends State<HomePage> {
     List<Deal> deals = [];
     for (var data in jsonData){
       Deal deal = Deal(
-        data["dealID"],
-        data["title"],
-        data["thumb"],
-        data["salePrice"],
-        data["normalPrice"],
-        data["metacriticScore"],
-        data["savings"],
+        dealID: data["dealID"],
+        title: data["title"],
+        image: data["thumb"],
+        salePrice: double.parse(data["salePrice"]),
+        normalPrice: double.parse(data["normalPrice"]),
+        score: double.parse(data["metacriticScore"]),
+        savings: double.parse(data["savings"]),
       );
       deals.add(deal);
     }
@@ -79,17 +85,19 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white10,
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text("SteamDeals"),
-            SizedBox(width: 10)
-          ]
-        ),
+        title: const Text("Explore"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: (){},
+          )
+        ],
       ),
       body: Container(
         margin: const EdgeInsets.only(top: 15, bottom: 10),
-        child: Column(
+        child: SingleChildScrollView(
+         child: Column(
           children: [
             const Text(
               "Featured",
@@ -98,16 +106,15 @@ class _HomePageState extends State<HomePage> {
             FutureBuilder(
               future: getFeaturedDeals(),
               builder: (context, AsyncSnapshot snapshot){
-                if (!snapshot.hasData){
-                  return const Text("Loading...");
+                if (snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator());
                 }
-                List<Deal> deals = [];
-                for (Deal d in snapshot.data){
-                  deals.add(d);
+                else if (snapshot.hasError){
+                  return const Center(child: Text("Something is wrong", style: TextStyle(color: Colors.white)));
                 }
                 return GFCarousel(
                   height: 270,
-                  items: deals.map(
+                  items: snapshot.data.map<Widget>(
                     (deal) {
                   return Container(
                     margin: const EdgeInsets.all(8.0),
@@ -128,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                             GFButton(
                               onPressed: (){},
                               shape: GFButtonShape.pills,
-                              child: Text("-${deal.savings}%"),
+                              child: Text("-${deal.savings.toStringAsFixed(2)}%"),
                             ),
                             GFButton(
                               onPressed: (){},
@@ -177,16 +184,15 @@ class _HomePageState extends State<HomePage> {
             FutureBuilder(
                 future: getBestScoreDeals(),
                 builder: (context, AsyncSnapshot snapshot){
-                  if (!snapshot.hasData){
-                    return const Text("Loading...");
+                  if (snapshot.connectionState == ConnectionState.waiting){
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  List<Deal> deals = [];
-                  for (Deal d in snapshot.data){
-                    deals.add(d);
+                  else if (snapshot.hasError){
+                    return const Center(child: Text("Something is wrong", style: TextStyle(color: Colors.white)));
                   }
                   return GFCarousel(
                     height: 270,
-                    items: deals.map(
+                    items: snapshot.data.map<Widget>(
                           (deal) {
                         return Container(
                           margin: const EdgeInsets.all(8.0),
@@ -207,7 +213,7 @@ class _HomePageState extends State<HomePage> {
                                   GFButton(
                                     onPressed: (){},
                                     shape: GFButtonShape.pills,
-                                    child: Text("-${deal.savings}%"),
+                                    child: Text("-${deal.savings.toStringAsFixed(2)}%"),
                                   ),
                                   GFButton(
                                       onPressed: (){},
@@ -252,6 +258,7 @@ class _HomePageState extends State<HomePage> {
 
     ]
         ),
+        )
       ),
       bottomNavigationBar: const BottomNavBar()
 

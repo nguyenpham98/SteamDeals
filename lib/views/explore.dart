@@ -1,17 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/route/route.dart' as route;
 import 'package:http/http.dart' as http;
 import 'package:getwidget/getwidget.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class Deal{
-  String dealID = "", title = "", image = "", savings = "", score = "", salePrice = "", normalPrice = "";
-  Deal(this.dealID, this.title, this.image, String salePrice, String normalPrice, this.score, String savings){
-    this.savings = double.parse(savings).toStringAsFixed(2);
-    this.salePrice = double.parse(salePrice).toStringAsFixed(2);
-    this.normalPrice = double.parse(normalPrice).toStringAsFixed(2);
-  }
+  String dealID, title, image;
+  double salePrice, normalPrice, score, savings;
+  Deal({
+    required this.dealID,
+    required this.title,
+    required this.image,
+    required this.salePrice,
+    required this.normalPrice,
+    required this.score,
+    required this.savings,
+  });
+  Map<String, dynamic> toJson() => {
+    'deal_ID': dealID,
+    'title': title,
+    'image': image,
+    'sale_price': salePrice,
+    'normal_price': normalPrice,
+    'metacritic_score': score,
+    'savings': savings
+  };
+  factory Deal.fromJson(Map<String, dynamic> json) => Deal(
+      dealID: json['deal_ID'],
+      title: json['title'],
+      image: json['image'],
+      salePrice: json['sale_price'],
+      normalPrice: json['normal_price'],
+      score: json['metacritic_score'],
+      savings: json['savings']
+  );
 }
 class ExplorePage extends StatefulWidget {
   const ExplorePage({Key? key}) : super(key: key);
@@ -21,6 +47,7 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
+  var user = FirebaseAuth.instance.currentUser;
 
   Future<List<Deal>> getDeals() async {
     const String baseUrl = 'www.cheapshark.com';
@@ -35,13 +62,13 @@ class _ExplorePageState extends State<ExplorePage> {
     List<Deal> deals = [];
     for (var data in jsonData){
       Deal deal = Deal(
-        data["dealID"],
-        data["title"],
-        data["thumb"],
-        data["salePrice"],
-        data["normalPrice"],
-        data["metacriticScore"],
-        data["savings"],
+        dealID: data["dealID"],
+        title: data["title"],
+        image: data["thumb"],
+        salePrice: double.parse(data["salePrice"]),
+        normalPrice: double.parse(data["normalPrice"]),
+        score: double.parse(data["metacriticScore"]),
+        savings: double.parse(data["savings"]),
       );
       deals.add(deal);
     }
@@ -66,18 +93,17 @@ class _ExplorePageState extends State<ExplorePage> {
       body: FutureBuilder(
         future: getDeals(),
         builder: (context, AsyncSnapshot snapshot){
-        if (!snapshot.hasData){
-        return const Text("Loading...");
-        }
-        List<Deal> deals = [];
-        for (Deal d in snapshot.data){
-        deals.add(d);
-        }
-        return ListView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: deals.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ExploreCard(deal: deals[index]);
+          if (snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator());
+          }
+          else if (snapshot.hasError){
+            return const Center(child: Text("Something is wrong", style: TextStyle(color: Colors.white)));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ExploreCard(deal: snapshot.data[index], userId: user?.uid);
           }
         );
         }
@@ -89,8 +115,9 @@ class _ExplorePageState extends State<ExplorePage> {
 }
 
 class ExploreCard extends StatefulWidget {
-  const ExploreCard({Key? key, required this.deal}) : super(key: key);
+  const ExploreCard({Key? key, required this.deal, required this.userId}) : super(key: key);
   final Deal deal;
+  final String? userId;
 
   @override
   State<ExploreCard> createState() => _ExploreCardState();
@@ -98,6 +125,20 @@ class ExploreCard extends StatefulWidget {
 
 class _ExploreCardState extends State<ExploreCard> {
   bool flag = false;
+
+  Future<void> updateList(Deal deal, String? userId, bool isChecked) async {
+    if (isChecked){
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'wishlist': FieldValue.arrayRemove([deal.toJson()])
+      }, SetOptions(merge: true));
+    }
+    else {
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'wishlist': FieldValue.arrayUnion([deal.toJson()])
+      }, SetOptions(merge: true));
+    }
+  }
+
   openBrowserTab(String url) async {
     const String redirectURL = "https://www.cheapshark.com/redirect?dealID=";
     Uri uri = Uri.parse(redirectURL + url);
@@ -142,7 +183,10 @@ class _ExploreCardState extends State<ExploreCard> {
       buttonBar: GFButtonBar(
         children: <Widget>[
           GFIconButton(
-            onPressed: () => setState(() => {flag = !flag}),
+            onPressed: () => {
+              updateList(widget.deal, widget.userId, flag),
+              setState(() => {flag = !flag})
+            },
             icon: flag == true ? const Icon(Icons.bookmark_outlined)  : const Icon(Icons.bookmark_outline_sharp),
             color: GFColors.WARNING,
           ),

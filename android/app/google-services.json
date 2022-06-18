@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "964716602393",
+    "project_id": "steamdeals-211ec",
+    "storage_bucket": "steamdeals-211ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964716602393:android:7f50861ee9d53a129c7688",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964716602393-j0dacl48iv8g5a5eo97og9jgd1712ugu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASaBknqidu7Fc36u_8WrAns7gucK6knxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "964716602393-j0dacl48iv8g5a5eo97og9jgd1712ugu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
