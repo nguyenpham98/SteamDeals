@@ -11,4 +11,27 @@ Technology:
 - Flutter, Firebase, CheapShark API, Dart
 
 Screenshots: 
+- Profile: 
+
 ![Profile](/lib/screenshots/profile.png)
+
+- Explore:
+
+![Explore](/lib/screenshots/explore.png)
+
+- Search: 
+
+![Explore](/lib/screenshots/search.png)
+
+- Home: 
+
+![Home](/lib/screenshots/home.png)
+
+- Not logged in yet:
+
+![Anonymous](/lib/screenshots/anonymous.png)
+
+
+
+
+
