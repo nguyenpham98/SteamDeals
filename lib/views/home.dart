@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:myapp/route/route.dart' as route;
 import 'package:http/http.dart' as http;
@@ -37,7 +36,6 @@ class _HomePageState extends State<HomePage> {
     };
     var response = await http.get(Uri.https(baseUrl, charactersPath, queryParameters));
     var jsonData = jsonDecode(response.body);
-
     List<Deal> deals = [];
     for (var data in jsonData){
       Deal deal = Deal(
@@ -85,14 +83,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white10,
       appBar: AppBar(
-        title: const Text("Explore"),
+        title: const Text("SteamDeals"),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: (){},
-          )
-        ],
       ),
       body: Container(
         margin: const EdgeInsets.only(top: 15, bottom: 10),

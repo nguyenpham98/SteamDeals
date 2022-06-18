@@ -48,14 +48,15 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   var user = FirebaseAuth.instance.currentUser;
-
+  String title = "";
   Future<List<Deal>> getDeals() async {
     const String baseUrl = 'www.cheapshark.com';
     const String charactersPath = 'api/1.0/deals';
     final Map<String, String> queryParameters = <String, String>{
       "storeID": "1",
       "onSale": "1",
-      "pageSize": "10"
+      "pageSize": "10",
+      "title": title
     };
     var response = await http.get(Uri.https(baseUrl, charactersPath, queryParameters));
     var jsonData = jsonDecode(response.body);
@@ -75,20 +76,68 @@ class _ExplorePageState extends State<ExplorePage> {
     return deals;
   }
 
+  Widget customSearchBar = const Text("Explore");
+  Icon customIcon = const Icon(Icons.search);
+  final textController = TextEditingController();
 
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white10,
         appBar: AppBar(
-        title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Explore"),
-              SizedBox(width: 10)
-            ]
-        ),
+        title: customSearchBar,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: customIcon,
+            onPressed: (){
+              setState((){
+                if (customIcon.icon == Icons.search){
+                  customIcon = const Icon(Icons.cancel);
+                  customSearchBar = ListTile(
+                    leading: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    title: TextField(
+                      controller: textController,
+                      onChanged: (text) {
+                        setState((){
+                          title = text;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Enter game title...',
+                        hintStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontStyle: FontStyle.italic,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }
+                else {
+                  customIcon = const Icon(Icons.search);
+                  customSearchBar = const Text("Explore");
+                }
+              });
+            },
+          )
+        ],
       ),
       body: FutureBuilder(
         future: getDeals(),

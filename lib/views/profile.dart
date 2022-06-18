@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/provider/google_sign_in.dart';
 import 'package:myapp/route/route.dart' as route;
-import 'package:http/http.dart' as http;
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
 
 class Deal{
   String dealID, title, image;
